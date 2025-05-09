@@ -1,0 +1,1 @@
+export const BASE_URL = process.env.NODE_ENV === 'production' ? 'https://api.syncroniza.cl' : 'http://localhost:3000/api';
