@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: syncroniza-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Passw0rd
+      MONGO_INITDB_DATABASE: syncroniza
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  api:
+    build:
+      context: ./api
+    container_name: syncroniza-api
+    restart: always
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_DATABASE=syncroniza
+      - MONGO_USER=root
+      - MONGO_PASSWORD=Passw0rd
+      - JWT_SECRET=your_jwt_secret_here
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  web:
+    build:
+      context: ./web
+    container_name: syncroniza-web
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+volumes:
+  mongodb_data:
